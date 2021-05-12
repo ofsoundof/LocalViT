@@ -94,14 +94,14 @@ class LocalityFeedForward(nn.Module):
         layers.extend([
             nn.Conv2d(in_dim, hidden_dim, 1, 1, 0, bias=False),
             nn.BatchNorm2d(hidden_dim),
-            h_swish() if act.find('hs') >= 0 else nn.ReLU(inplace=True)])
+            h_swish() if act.find('hs') >= 0 else nn.ReLU6(inplace=True)])
 
         # the depth-wise convolution between the two linear layers
         if not wo_dp_conv:
             dp = [
                 nn.Conv2d(hidden_dim, hidden_dim, kernel_size, stride, kernel_size // 2, groups=hidden_dim, bias=False),
                 nn.BatchNorm2d(hidden_dim),
-                h_swish() if act.find('hs') >= 0 else nn.ReLU(inplace=True)
+                h_swish() if act.find('hs') >= 0 else nn.ReLU6(inplace=True)
             ]
             if dp_first:
                 layers = dp + layers
@@ -177,10 +177,8 @@ class Attention(nn.Module):
 
 class Block(nn.Module):
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, qk_reduce=1, drop=0., attn_drop=0.,
-                 drop_path=0., norm_layer=nn.LayerNorm, num_patches=196,
-                 act='hs+se', reduction=4, wo_dp_conv=False, dp_first=False):
+                 drop_path=0., norm_layer=nn.LayerNorm, act='hs+se', reduction=4, wo_dp_conv=False, dp_first=False):
         super().__init__()
-        self.num_patches = num_patches
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
             dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale, qk_reduce=qk_reduce,
@@ -196,12 +194,70 @@ class Block(nn.Module):
 
         x = x + self.drop_path(self.attn(self.norm1(x)))                            # (B, 197, dim)
         # Split the class token and the image token.
-        cls_token, x = torch.split(x, [1, self.num_patches], dim=1)                 # (B, 1, dim), (B, 196, dim)
+        cls_token, x = torch.split(x, [1, embed_dim - 1], dim=1)                    # (B, 1, dim), (B, 196, dim)
         # Reshape and update the image token.
         x = x.transpose(1, 2).view(batch_size, embed_dim, patch_size, patch_size)   # (B, dim, 14, 14)
         x = self.conv(x).flatten(2).transpose(1, 2)                                 # (B, 196, dim)
         # Concatenate the class token and the newly computed image token.
         x = torch.cat([cls_token, x], dim=1)
+        return x
+
+
+class TransformerLayer(nn.Module):
+    def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+                 drop_path=0., norm_layer=nn.LayerNorm):
+        super().__init__()
+        self.norm1 = norm_layer(dim)
+        self.attn = Attention(
+            dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
+        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
+
+        #########################################
+        # Origianl implementation
+        # self.norm2 = norm_layer(dim)
+        #         mlp_hidden_dim = int(dim * mlp_ratio)
+        #         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+        #########################################
+
+        # Replace the MLP layer by LocalityFeedForward.
+        self.conv = LocalityFeedForward(dim, dim, 1, mlp_ratio, act='hs+se', reduction=dim//4)
+
+    def forward(self, x):
+        x = x + self.drop_path(self.attn(self.norm1(x)))
+        #########################################
+        # Origianl implementation
+        # x = x + self.drop_path(self.mlp(self.norm2(x)))
+        #########################################
+
+        # Change the computation accordingly in three steps.
+        batch_size, num_token, embed_dim = x.shape
+        patch_size = int(math.sqrt(num_token))
+        # 1. Split the class token and the image token.
+        cls_token, x = torch.split(x, [1, embed_dim - 1], dim=1)
+        # 2. Reshape and update the image token.
+        x = x.transpose(1, 2).view(batch_size, embed_dim, patch_size, patch_size)
+        x = self.conv(x).flatten(2).transpose(1, 2)
+        # 3. Concatenate the class token and the newly computed image token.
+        x = torch.cat([cls_token, x], dim=1)
+        return x
+
+
+class TransformerLayerOriginal(nn.Module):
+
+    def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm):
+        super().__init__()
+        self.norm1 = norm_layer(dim)
+        self.attn = Attention(
+            dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
+        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
+        self.norm2 = norm_layer(dim)
+        mlp_hidden_dim = int(dim * mlp_ratio)
+        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
+
+    def forward(self, x):
+        x = x + self.drop_path(self.attn(self.norm1(x)))
+        x = x + self.drop_path(self.mlp(self.norm2(x)))
         return x
 
 
@@ -219,7 +275,7 @@ class LocalVisionTransformer(VisionTransformer):
 
         # parse act
         if act == 1:
-            act = 'relu'
+            act = 'relu6'
         elif act == 2:
             act = 'hs'
         elif act == 3:
@@ -241,6 +297,15 @@ class LocalVisionTransformer(VisionTransformer):
         self.norm = norm_layer(embed_dim)
 
         self.apply(self._init_weights)
+
+
+
+@register_model
+def localvit_tiny_mlp6_act1(pretrained=False, **kwargs):
+    model = LocalVisionTransformer(
+        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=6, qkv_bias=True, act=1,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
+    return model
 
 
 #####################################################################

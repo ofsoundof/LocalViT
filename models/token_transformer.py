@@ -1,14 +1,10 @@
-# Copyright (c) [2012]-[2021] Shanghai Yitu Technology Co., Ltd.
-#
-# This source code is licensed under the Clear BSD License
-# LICENSE file in the root directory of this file
-# All rights reserved.
 """
 Take the standard Transformer as T2T Transformer
 """
 import torch.nn as nn
 from timm.models.layers import DropPath
-from .transformer_block import Mlp, LocalityFeedForward
+from models.t2t_vit_block import Mlp
+from models.localvit import LocalityFeedForward
 import math
 import torch
 
@@ -63,33 +59,18 @@ class Token_transformer(nn.Module):
         return x
 
 
-class Token_transformer_acc(nn.Module):
+class Token_transformer_local(nn.Module):
 
     def __init__(self, dim, in_dim, num_heads, mlp_ratio=1., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm,
-                 conv_expand_ratio=1, wo_depthwise=False, use_se='', reduction=4):
+                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm):
         super().__init__()
         self.norm1 = norm_layer(dim)
         self.attn = Attention(
             dim, in_dim=in_dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
-        self.conv = LocalityFeedForward(in_dim, in_dim, 1, conv_expand_ratio, wo_dp_conv=wo_depthwise,
-                                        use_se=use_se, reduction=in_dim//4)
-        # self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
-        # self.norm2 = norm_layer(in_dim)
-        # self.mlp = Mlp(in_features=in_dim, hidden_features=int(in_dim*mlp_ratio), out_features=in_dim, act_layer=act_layer, drop=drop)
+        self.conv = LocalityFeedForward(in_dim, in_dim, 1, mlp_ratio, act='hs', reduction=in_dim//4)
 
     def forward(self, x):
-        # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        # print(x.shape)
-
-
         x = self.attn(self.norm1(x))
-        # print(x.shape)
-        # print(cls_token.shape, x.shape)
 
         batch_size, num_token, embed_dim = x.shape  # (B, 197, dim)
         patch_size = int(math.sqrt(num_token))

@@ -1,5 +1,3 @@
-# Copyright (c) 2015-present, Facebook, Inc.
-# All rights reserved.
 import argparse
 import datetime
 import numpy as np
@@ -23,8 +21,7 @@ from losses import DistillationLoss
 from samplers import RASampler
 import models
 import utils
-from flops_counter import get_model_complexity_info
-# from IPython import embed
+# from flops_counter import get_model_complexity_info
 
 
 def get_args_parser():
@@ -251,11 +248,11 @@ def main(args):
     # embed(); exit()
     print(model)
 
-    with torch.cuda.device(0):
-        macs, params = get_model_complexity_info(model, (3, 224, 224), as_strings=True,
-                                                 print_per_layer_stat=True, verbose=True)
-        print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
-        print('{:<30}  {:<8}'.format('Number of parameters: ', params))
+    # with torch.cuda.device(0):
+    #     macs, params = get_model_complexity_info(model, (3, 224, 224), as_strings=True,
+    #                                              print_per_layer_stat=True, verbose=True)
+    #     print('{:<30}  {:<8}'.format('Computational complexity: ', macs))
+    #     print('{:<30}  {:<8}'.format('Number of parameters: ', params))
     # exit()
 
     if args.finetune:
@@ -362,6 +359,11 @@ def main(args):
                 args.resume, map_location='cpu', check_hash=True)
         else:
             checkpoint = torch.load(args.resume, map_location='cpu')
+
+        # for (k1, v1), (k2, v2) in zip(model_without_ddp.state_dict().items(), checkpoint['state_dict_ema'].items()):
+        #     print(k1, v1.shape)
+        #     print(k2, v2.shape)
+
         model_without_ddp.load_state_dict(checkpoint['model'])
         if not args.eval and 'optimizer' in checkpoint and 'lr_scheduler' in checkpoint and 'epoch' in checkpoint:
             optimizer.load_state_dict(checkpoint['optimizer'])

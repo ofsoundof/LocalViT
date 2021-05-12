@@ -4,7 +4,7 @@ Take Performer as T2T Transformer
 import math
 import torch
 import torch.nn as nn
-from .localvit_t2t import LocalityFeedForward
+from models.localvit import LocalityFeedForward
 
 class Token_performer(nn.Module):
     def __init__(self, dim, in_dim, head_cnt=1, kernel_ratio=0.5, dp1=0.1, dp2 = 0.1):
@@ -60,9 +60,8 @@ class Token_performer(nn.Module):
         return x
 
 
-class Token_performer_acc(nn.Module):
-    def __init__(self, dim, in_dim, head_cnt=1, kernel_ratio=0.5, dp1=0.1, dp2 = 0.1,
-                 conv_expand_ratio=1, wo_depthwise=False, use_se='', reduction=4):
+class Token_performer_local(nn.Module):
+    def __init__(self, dim, in_dim, head_cnt=1, kernel_ratio=0.5, dp1=0.1, dp2 = 0.1):
         super().__init__()
         self.emb = in_dim * head_cnt # we use 1, so it is no need here
         self.kqv = nn.Linear(dim, 3 * self.emb)
@@ -73,8 +72,7 @@ class Token_performer_acc(nn.Module):
         self.norm2 = nn.LayerNorm(self.emb)
         self.epsilon = 1e-8  # for stable in division
 
-        self.conv = LocalityFeedForward(in_dim, in_dim, 1, conv_expand_ratio, wo_dp_conv=wo_depthwise,
-                                        use_se=use_se, reduction=in_dim//4)
+        self.conv = LocalityFeedForward(in_dim, in_dim, 1, expand_ratio=1, act='hs', reduction=in_dim//4)
 
         self.m = int(self.emb * kernel_ratio)
         self.w = torch.randn(self.m, self.emb)
