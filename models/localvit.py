@@ -308,31 +308,11 @@ def localvit_tiny_mlp6_act1(pretrained=False, **kwargs):
     return model
 
 
-#####################################################################
-# Analysis of V3
-#####################################################################
-
 # reduction = 4
 @register_model
 def localvit_tiny_mlp4_act3_r4(pretrained=False, **kwargs):
     model = LocalVisionTransformer(
         patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=4,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-# reduction = 48
-@register_model
-def localvit_tiny_mlp4_act3_r48(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=48,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-# reduction = 96
-@register_model
-def localvit_tiny_mlp4_act3_r96(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=96,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     return model
 
@@ -345,83 +325,9 @@ def localvit_tiny_mlp4_act3_r192(pretrained=False, **kwargs):
     return model
 
 
-# different expansion ratio
-@register_model
-def localvit_tiny_mlp1_act3(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=1, qkv_bias=True, act=3, reduction=48,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_tiny_mlp2_act3(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=2, qkv_bias=True, act=3, reduction=96,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_tiny_mlp3_act3(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=3, qkv_bias=True, act=3, reduction=144,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-
-#####################################################################
-# Small and large models, V3, use SE, hidden_dim of SE: 4
-#####################################################################
-
 @register_model
 def localvit_small_mlp4_act3_r384(pretrained=False, **kwargs):
     model = LocalVisionTransformer(
         patch_size=16, embed_dim=384, depth=12, num_heads=8, mlp_ratio=4, qkv_bias=True, act=3, reduction=384,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_base_mlp4_act3_r768(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=768, depth=12, num_heads=16, mlp_ratio=4, qkv_bias=True, act=3, reduction=768,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-
-#####################################################################
-# depth-wise convolution is placed before the first 1 x 1 convolution
-#####################################################################
-
-@register_model
-def localvit_tiny_mlp4_act3_r48_f1(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=48,
-        dp_first=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_tiny_mlp4_act3_r12_f1(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=12,
-        dp_first=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_tiny_mlp4_act3_r4_f1(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=192, depth=12, num_heads=4, mlp_ratio=4, qkv_bias=True, act=3, reduction=4,
-        dp_first=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_small_mlp4_act3_r96_f1(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=384, depth=12, num_heads=8, mlp_ratio=4, qkv_bias=True, act=3, reduction=96,
-        dp_first=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
-    return model
-
-@register_model
-def localvit_base_mlp4_act3_r192_f1(pretrained=False, **kwargs):
-    model = LocalVisionTransformer(
-        patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True, act=3, reduction=192,
-        dp_first=True, norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
     return model
