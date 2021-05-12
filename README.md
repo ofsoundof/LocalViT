@@ -50,7 +50,7 @@ pip install timm==0.3.2
 ## Data preparation
 
 Download and extract [ImageNet](http://image-net.org/) train and val images.
-The directory structure is the standard layout for the torchvision [`datasets.ImageFolder`](https://pytorch.org/docs/stable/torchvision/datasets.html#imagefolder) as follows:
+The directory structure is the standard layout for the torchvision [`datasets.ImageFolder`](https://pytorch.org/vision/stable/datasets.html#imagefolder) as follows:
 
 ```
 │imagenet/
@@ -141,7 +141,7 @@ python -m torch.distributed.launch --nproc_per_node=8 --use_env main.py --model 
 
 In order to introduce the locality mechanism into existing vision transformers, there are two steps.
 
-I. Replace the MLP layer with `LocalityFeedForward`.
+I. Replace the MLP layer with [`LocalityFeedForward`](https://github.com/ofsoundof/LocalViT/blob/main/models/localvit.py#L70).
 
 II. Change the computation procedure accordingly.
 
