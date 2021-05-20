@@ -1,5 +1,8 @@
 """
-LocalViT
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Introducing locality mechanism to "DeiT: Data-efficient Image Transformers".
 """
 import torch
 import torch.nn as nn

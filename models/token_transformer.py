@@ -1,4 +1,10 @@
 """
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Implementation of "Tokens-to-token vit: Training vision transformers from scratch on imagenet".
+Code borrowed from https://github.com/yitu-opensource/T2T-ViT
+
 Take the standard Transformer as T2T Transformer
 """
 import torch.nn as nn

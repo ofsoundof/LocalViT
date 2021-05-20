@@ -1,5 +1,8 @@
 """
-T2T-ViT
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Introducing locality mechanism to "Tokens-to-token vit: Training vision transformers from scratch on imagenet".
 """
 import torch
 import math

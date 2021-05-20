@@ -1,3 +1,10 @@
+"""
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Introducing locality mechanism to "Pyramid Vision Transformer: A Versatile Backbone for Dense Prediction without Convolutions".
+"""
+
 import torch
 import torch.nn as nn
 from functools import partial

@@ -6,3 +6,5 @@ from models import localvit
 from models import localvit_tnt
 from models import localvit_pvt
 from models import localvit_t2t
+from models import swin_transformer
+from models import localvit_swin

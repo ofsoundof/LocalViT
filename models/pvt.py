@@ -1,3 +1,11 @@
+"""
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Implementation of "Pyramid Vision Transformer: A Versatile Backbone for Dense Prediction without Convolutions".
+Code borrowed from https://github.com/whai362/PVT
+"""
+
 import torch
 import torch.nn as nn
 from functools import partial

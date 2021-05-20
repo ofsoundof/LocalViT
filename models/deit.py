@@ -1,3 +1,11 @@
+"""
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Implementation of "DeiT: Data-efficient Image Transformers".
+Code borrowed from https://github.com/facebookresearch/deit
+"""
+
 import torch
 import torch.nn as nn
 from functools import partial

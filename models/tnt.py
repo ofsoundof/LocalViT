@@ -1,4 +1,10 @@
-""" Transformer in Transformer (TNT) in PyTorch
+"""
+Author: Yawei Li
+Email: yawei.li@vision.ee.ethz.ch
+
+Code borrowed from https://github.com/rwightman/pytorch-image-models
+
+Transformer in Transformer (TNT) in PyTorch
 A PyTorch implement of TNT as described in
 'Transformer in Transformer' - https://arxiv.org/abs/2103.00112
 The official mindspore code is released and available at

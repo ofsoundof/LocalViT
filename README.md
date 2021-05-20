@@ -19,6 +19,9 @@ If you use this code for a paper please cite:
 
 The repository is based on the [timm package](https://github.com/rwightman/pytorch-image-models) by [Ross Wightman](https://github.com/rwightman) and [Deit](https://github.com/facebookresearch/deit) by Hugo Touvron.
 
+# Update
+
+Swin Transformer is added in the experiment. When training under the same training protocol, LocalViT-Swin outperforms Swin-T by 1.0% in terms of Top-1 Accuracy.
 
 # 1. Model Zoo
 
@@ -31,6 +34,7 @@ The pre-trained models on ImageNet 2012 are provided.
 | LocalViT-S | 80.78 | 95.38 | 22.4M| [model](https://drive.google.com/file/d/18p7jsRI7sPjBinog81acLdsUicxADJYk/view?usp=sharing) |
 | LocalViT-PVT | 78.14 | 94.24 | 13.5M | [model](https://drive.google.com/file/d/1pMcV47s5UchpKVBpe_A8BrtL0pG9yVvF/view?usp=sharing) |
 | LocalViT-TNT | 75.90 | 92.90 | 6.3M | [model](https://drive.google.com/file/d/1b6AoHeq7WGFPNB4jibMjWGK1nKfhLvA_/view?usp=sharing) |
+| LocalViT-Swin | 81.86 | 95.72 | 29.1M | [model](https://drive.google.com/file/d/1slE6P6use6f8PnNC43y82XHNy1ntDW1F/view?usp=sharing) |
 
 SE4 means that the hidden dimension in the SE module is reduced by 4. See Table 2 in the paper.
 
@@ -125,6 +129,18 @@ python main.py --model localvit_pvt_tiny --eval --resume /path/to/localvit_pvt.p
 This should give
 ```
 * Acc@1 78.144 Acc@5 94.238 loss 1.058
+```
+
+--------------------------------------------------------------------
+
+[LocalViT-Swin](https://drive.google.com/file/d/1slE6P6use6f8PnNC43y82XHNy1ntDW1F/view?usp=sharing)
+
+```
+python main.py --model localvit_swin_tiny_patch4_window7_224 --eval --resume /path/to/localvit_swin.pth --data-path /path/to/imagenet
+```
+This should give
+```
+* Acc@1 81.860 Acc@5 95.720 loss 1.109
 ```
 
 
