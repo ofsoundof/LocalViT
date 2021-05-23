@@ -197,7 +197,7 @@ class Block(nn.Module):
 
         x = x + self.drop_path(self.attn(self.norm1(x)))                            # (B, 197, dim)
         # Split the class token and the image token.
-        cls_token, x = torch.split(x, [1, embed_dim - 1], dim=1)                    # (B, 1, dim), (B, 196, dim)
+        cls_token, x = torch.split(x, [1, num_token - 1], dim=1)                    # (B, 1, dim), (B, 196, dim)
         # Reshape and update the image token.
         x = x.transpose(1, 2).view(batch_size, embed_dim, patch_size, patch_size)   # (B, dim, 14, 14)
         x = self.conv(x).flatten(2).transpose(1, 2)                                 # (B, 196, dim)
@@ -245,25 +245,6 @@ class TransformerLayer(nn.Module):
         return x
 
 
-class TransformerLayerOriginal(nn.Module):
-
-    def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
-                 drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm):
-        super().__init__()
-        self.norm1 = norm_layer(dim)
-        self.attn = Attention(
-            dim, num_heads=num_heads, qkv_bias=qkv_bias, qk_scale=qk_scale, attn_drop=attn_drop, proj_drop=drop)
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
-        self.norm2 = norm_layer(dim)
-        mlp_hidden_dim = int(dim * mlp_ratio)
-        self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
-
-    def forward(self, x):
-        x = x + self.drop_path(self.attn(self.norm1(x)))
-        x = x + self.drop_path(self.mlp(self.norm2(x)))
-        return x
-
-
 class LocalVisionTransformer(VisionTransformer):
     """ Vision Transformer with support for patch or hybrid CNN input stage
     """
@@ -288,13 +269,12 @@ class LocalVisionTransformer(VisionTransformer):
         else:
             act = 'hs+ecah'
 
-        num_patches = self.patch_embed.num_patches
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, depth)]  # stochastic depth decay rule
         self.blocks = nn.ModuleList([
             Block(
                 dim=embed_dim, num_heads=num_heads, mlp_ratio=mlp_ratio, qkv_bias=qkv_bias, qk_scale=qk_scale,
                 drop=drop_rate, attn_drop=attn_drop_rate, drop_path=dpr[i], norm_layer=norm_layer,
-                num_patches=num_patches, act=act, reduction=reduction, wo_dp_conv=wo_dp_conv, dp_first=dp_first
+                act=act, reduction=reduction, wo_dp_conv=wo_dp_conv, dp_first=dp_first
             )
             for i in range(depth)])
         self.norm = norm_layer(embed_dim)

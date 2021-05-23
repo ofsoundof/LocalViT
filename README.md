@@ -205,7 +205,7 @@ class TransformerLayer(nn.Module):
         batch_size, num_token, embed_dim = x.shape
         patch_size = int(math.sqrt(num_token))
         # 1. Split the class token and the image token.
-        cls_token, x = torch.split(x, [1, embed_dim - 1], dim=1)                    
+        cls_token, x = torch.split(x, [1, num_token - 1], dim=1)                    
         # 2. Reshape and update the image token.
         x = x.transpose(1, 2).view(batch_size, embed_dim, patch_size, patch_size)  
         x = self.conv(x).flatten(2).transpose(1, 2)                                
