@@ -25,16 +25,16 @@ Swin Transformer is added in the experiment. When training under the same traini
 
 # 1. Model Zoo
 
-The pre-trained models on ImageNet 2012 are provided.
+The pre-trained models on ImageNet 2012 are provided in [Releases/v1.0.0](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0).
 
-| Model | Top1 acc % | Top 5 acc % | #Params | Download |
+| Model | Top1 acc % | Top 5 acc % | #Params | Checkpoint|
 | --- | --- | --- | --- | --- |
-| LocalViT-T | 74.84 | 92.61 | 5.7M | [model](https://drive.google.com/file/d/1x34YjvhIObfcv1OsVnaKRjuRgPgadm4F/view?usp=sharing) |
-| LocalViT-T-SE4 | 75.74 | 93.05 | 9.4M | [model](https://drive.google.com/file/d/1EG8mzoP1qZQxH4XVnYGkLFQT3LcXD-7U/view?usp=sharing) |
-| LocalViT-S | 80.78 | 95.38 | 22.4M| [model](https://drive.google.com/file/d/18p7jsRI7sPjBinog81acLdsUicxADJYk/view?usp=sharing) |
-| LocalViT-PVT | 78.14 | 94.24 | 13.5M | [model](https://drive.google.com/file/d/1pMcV47s5UchpKVBpe_A8BrtL0pG9yVvF/view?usp=sharing) |
-| LocalViT-TNT | 75.90 | 92.90 | 6.3M | [model](https://drive.google.com/file/d/1b6AoHeq7WGFPNB4jibMjWGK1nKfhLvA_/view?usp=sharing) |
-| LocalViT-Swin | 81.86 | 95.72 | 29.1M | [model](https://drive.google.com/file/d/1slE6P6use6f8PnNC43y82XHNy1ntDW1F/view?usp=sharing) |
+| LocalViT-T | 74.84 | 92.61 | 5.7M | `localvit_t.pth` |
+| LocalViT-T-SE4 | 75.74 | 93.05 | 9.4M | `localvit_t_se4.pth` |
+| LocalViT-S | 80.78 | 95.38 | 22.4M| `localvit_s.pth` |
+| LocalViT-PVT | 78.14 | 94.24 | 13.5M | `localvit_pvt.pth` |
+| LocalViT-TNT | 75.90 | 92.90 | 6.3M | `localvit_tnt.pth` |
+| LocalViT-Swin | 81.86 | 95.72 | 29.1M | `localvit_swin.pth`|
 
 SE4 means that the hidden dimension in the SE module is reduced by 4. See Table 2 in the paper.
 
@@ -72,7 +72,7 @@ The directory structure is the standard layout for the torchvision [`datasets.Im
 
 # 3. Evaluation
 
-To evaluate [LocalViT-T](https://drive.google.com/file/d/1x34YjvhIObfcv1OsVnaKRjuRgPgadm4F/view?usp=sharing) pre-trained on ImageNet with a single GPU:
+To evaluate [LocalViT-T](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0) pre-trained on ImageNet with a single GPU:
 ```
 python main.py --model localvit_tiny_mlp4_act3_r192 --eval --resume /path/to/localvit_t.pth --data-path /path/to/imagenet
 ```
@@ -85,7 +85,7 @@ Evaluating the other models.
 
 --------------------------------------------------------------------
 
-[LocalViT-SE4](https://drive.google.com/file/d/1EG8mzoP1qZQxH4XVnYGkLFQT3LcXD-7U/view?usp=sharing)
+[LocalViT-SE4](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0)
 
 ```
 python main.py --model localvit_tiny_mlp4_act3_r4 --eval --resume /path/to/localvit_t_se4.pth --data-path /path/to/imagenet
@@ -97,7 +97,7 @@ This should give
 
 --------------------------------------------------------------------
 
-[LocalViT-S](https://drive.google.com/file/d/18p7jsRI7sPjBinog81acLdsUicxADJYk/view?usp=sharing)
+[LocalViT-S](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0)
 
 ```
 python main.py --model localvit_small --eval --resume /path/to/localvit_s.pth --data-path /path/to/imagenet
@@ -109,7 +109,7 @@ This should give
 
 --------------------------------------------------------------------
 
-[LocalViT-TNT](https://drive.google.com/file/d/1b6AoHeq7WGFPNB4jibMjWGK1nKfhLvA_/view?usp=sharing)
+[LocalViT-TNT](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0)
 
 ```
 python main.py --model localvit_tnt_t_patch16_224 --eval --resume /path/to/localvit_tnt.pth --data-path /path/to/imagenet
@@ -121,7 +121,7 @@ This should give
 
 --------------------------------------------------------------------
 
-[LocalViT-PVT](https://drive.google.com/file/d/1pMcV47s5UchpKVBpe_A8BrtL0pG9yVvF/view?usp=sharing)
+[LocalViT-PVT](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0)
 
 ```
 python main.py --model localvit_pvt_tiny --eval --resume /path/to/localvit_pvt.pth --data-path /path/to/imagenet
@@ -133,7 +133,7 @@ This should give
 
 --------------------------------------------------------------------
 
-[LocalViT-Swin](https://drive.google.com/file/d/1slE6P6use6f8PnNC43y82XHNy1ntDW1F/view?usp=sharing)
+[LocalViT-Swin](https://github.com/ofsoundof/LocalViT/releases/tag/v1.0.0)
 
 ```
 python main.py --model localvit_swin_tiny_patch4_window7_224 --eval --resume /path/to/localvit_swin.pth --data-path /path/to/imagenet
