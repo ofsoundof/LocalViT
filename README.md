@@ -9,11 +9,13 @@ LocalViT can consistently improve the performance of current Vision Transformers
 If you use this code for a paper please cite:
 
 ```
-@article{li2021localvit,
-  title={LocalViT: Bringing Locality to Vision Transformers},
-  author={Li, Yawei and Zhang, Kai and Cao, Jiezhang and Timofte, Radu and Van Gool, Luc},
-  journal={arXiv preprint arXiv:2104.05707},
-  year={2021}
+@inproceedings{li2023localvit,
+  title={LocalViT: Analyzing locality in vision transformers},
+  author={Li, Yawei and Zhang, Kai and Cao, Jiezhang and Timofte, Radu and Magno, Michele and Benini, Luca and Van Goo, Luc},
+  booktitle={2023 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS)},
+  pages={9598--9605},
+  year={2023},
+  organization={IEEE}
 }
 ```
 
@@ -21,7 +23,7 @@ The repository is based on the [timm package](https://github.com/rwightman/pytor
 
 # Update
 
-Swin Transformer is added in the experiment. When training under the same training protocol, LocalViT-Swin outperforms Swin-T by 1.0% in terms of Top-1 Accuracy.
+Swin Transformer is added to the experiment. When training under the same training protocol, LocalViT-Swin outperforms Swin-T by 1.0% in terms of Top-1 Accuracy.
 
 # 1. Model Zoo
 
